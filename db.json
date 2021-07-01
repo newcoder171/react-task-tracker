@@ -7,10 +7,10 @@
       "reminder": true
     },
     {
-      "id": 2,
-      "text": "Gym appointment",
-      "date": "June 7th at 5:30pm",
-      "reminder": true
+      "text": "Team Meeting",
+      "date": "July 1st at 11:00AM",
+      "reminder": true,
+      "id": 3
     }
   ]
 }
