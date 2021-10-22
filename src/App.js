@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Tasks from "./components/Tasks";
 import "./App.css";
 import AddTask from "./components/AddTask";
+import About from "./components/About";
 
 function App() {
   const [showAddTask, setShowAddTask] = useState(false)
-  const [tasks, setTasks] = useState([]); 
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const getTask = async () => {
@@ -56,7 +59,7 @@ function App() {
 
   const toggleReminder = async (id) => {
     const task = await fetchTask(id)
-    const updated = {...task, reminder: !task.reminder }
+    const updated = { ...task, reminder: !task.reminder }
     const res = await fetch(`http://localhost:5000/tasks/${id}`, {
       method: 'PUT',
       headers: {
@@ -64,18 +67,28 @@ function App() {
       },
       body: JSON.stringify(updated)
     })
-    const data = res.json()
-    setTasks(tasks.map((task) => task.id === id ? {...task, reminder: !data.reminder } : task))
+    const data = await res.json()
+    setTasks(tasks.map((task) => task.id === id ? { ...task, reminder: data.reminder } : task))
   }
 
-  
+
 
   return (
-    <div className="container">
-      <Header onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask} />
-      { showAddTask && <AddTask onAdd={addTask} />}
-      {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} /> : 'No tasks to show'}
-    </div>
+    <Router>
+      <div className="container">
+        <Header onAdd={() => setShowAddTask(!showAddTask)} showAddTask={showAddTask} />
+
+        <Route path='/' exact render={(props) => (
+          <>
+            {showAddTask && <AddTask onAdd={addTask} />}
+            {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} /> : 'No tasks to show'}
+          </>
+        )} />
+        <Route path='/about' component={About} />
+        <Footer />
+      </div>
+    </Router>
+
   );
 }
 
